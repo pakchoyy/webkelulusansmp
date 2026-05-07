@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
 
 export async function POST(req: NextRequest) {
   const { userId, namaSekolah, slug, email } = await req.json()
@@ -8,7 +8,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Data tidak lengkap' }, { status: 400 })
   }
 
-  const supabase = await createServiceClient()
+  // Pakai createClient langsung dengan service role — bypass RLS
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
 
   const { data: existing } = await supabase
     .from('schools')
@@ -17,7 +21,7 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (existing) {
-    return NextResponse.json({ error: 'Slug sudah dipakai sekolah lain.' }, { status: 409 })
+    return NextResponse.json({ error: 'Slug sudah dipakai.' }, { status: 409 })
   }
 
   const { error } = await supabase.from('schools').insert({
