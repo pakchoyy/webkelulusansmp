@@ -1,22 +1,20 @@
 'use client'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const supabase = createClient()
 
   const [step, setStep] = useState<'code' | 'form'>('code')
   const [activationCode, setActivationCode] = useState(searchParams.get('code') || '')
-
   const [namaSekolah, setNamaSekolah] = useState('')
   const [slug, setSlug] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -28,7 +26,6 @@ export default function RegisterPage() {
       .select('id, used')
       .eq('code', activationCode.trim().toUpperCase())
       .single()
-
     setLoading(false)
     if (!data) return setError('Kode aktivasi tidak ditemukan.')
     if (data.used) return setError('Kode aktivasi sudah digunakan.')
@@ -36,11 +33,7 @@ export default function RegisterPage() {
   }
 
   function generateSlug(name: string) {
-    return name
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .slice(0, 40)
+    return name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').slice(0, 40)
   }
 
   async function handleRegister(e: React.FormEvent) {
@@ -48,7 +41,6 @@ export default function RegisterPage() {
     setLoading(true)
     setError('')
 
-    // 1. Buat akun auth dulu
     const { data: authData, error: signUpError } = await supabase.auth.signUp({
       email: email.trim(),
       password,
@@ -60,14 +52,11 @@ export default function RegisterPage() {
       return
     }
 
-    const userId = authData.user.id
-
-    // 2. Insert sekolah via API route (server-side, pakai service role)
     const res = await fetch('/api/register-school', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userId,
+        userId: authData.user.id,
         namaSekolah: namaSekolah.trim(),
         slug: slug.trim(),
         email: email.trim(),
@@ -75,17 +64,15 @@ export default function RegisterPage() {
     })
 
     const result = await res.json()
-
     if (!res.ok) {
       setError(result.error || 'Gagal menyimpan data sekolah.')
       setLoading(false)
       return
     }
 
-    // 3. Tandai kode aktivasi sebagai used
     await supabase
       .from('activation_codes')
-      .update({ used: true, used_by: userId, used_at: new Date().toISOString() })
+      .update({ used: true, used_by: authData.user.id, used_at: new Date().toISOString() })
       .eq('code', activationCode.trim().toUpperCase())
 
     router.push('/dashboard')
@@ -132,61 +119,36 @@ export default function RegisterPage() {
             </div>
             <div>
               <label className="text-xs font-bold text-gray-600 block mb-1">Nama Sekolah</label>
-              <input
-                type="text"
-                value={namaSekolah}
-                onChange={e => {
-                  setNamaSekolah(e.target.value)
-                  setSlug(generateSlug(e.target.value))
-                }}
-                placeholder="SD Negeri 1 Nusantara"
-                required
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-sm focus:outline-none focus:border-blue-400"
-              />
+              <input type="text" value={namaSekolah}
+                onChange={e => { setNamaSekolah(e.target.value); setSlug(generateSlug(e.target.value)) }}
+                placeholder="SD Negeri 1 Nusantara" required
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-sm focus:outline-none focus:border-blue-400" />
             </div>
             <div>
               <label className="text-xs font-bold text-gray-600 block mb-1">Slug URL</label>
-              <input
-                type="text"
-                value={slug}
+              <input type="text" value={slug}
                 onChange={e => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                placeholder="sdn1-nusantara"
-                required
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-sm font-mono focus:outline-none focus:border-blue-400"
-              />
+                placeholder="sdn1-nusantara" required
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-sm font-mono focus:outline-none focus:border-blue-400" />
               <p className="text-xs text-gray-400 mt-1">
                 umuminsd.vercel.app/<strong className="text-blue-600">{slug || 'slug-sekolah'}</strong>
               </p>
             </div>
             <div>
               <label className="text-xs font-bold text-gray-600 block mb-1">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="admin@sekolah.com"
-                required
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-sm focus:outline-none focus:border-blue-400"
-              />
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                placeholder="admin@sekolah.com" required
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-sm focus:outline-none focus:border-blue-400" />
             </div>
             <div>
               <label className="text-xs font-bold text-gray-600 block mb-1">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="Min. 6 karakter"
-                required
-                minLength={6}
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-sm focus:outline-none focus:border-blue-400"
-              />
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)}
+                placeholder="Min. 6 karakter" required minLength={6}
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-sm focus:outline-none focus:border-blue-400" />
             </div>
             {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
-            <button
-              type="submit"
-              disabled={loading}
-              className="neo-brutal-sm w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-60"
-            >
+            <button type="submit" disabled={loading}
+              className="neo-brutal-sm w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-60">
               {loading ? 'Mendaftar...' : 'Daftar Sekarang'}
             </button>
           </form>
@@ -194,11 +156,17 @@ export default function RegisterPage() {
 
         <p className="text-center text-sm text-gray-500 mt-4">
           Sudah punya akun?{' '}
-          <Link href="/login" className="text-blue-600 font-bold hover:underline">
-            Masuk
-          </Link>
+          <Link href="/login" className="text-blue-600 font-bold hover:underline">Masuk</Link>
         </p>
       </div>
     </div>
+  )
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><p className="text-gray-500">Loading...</p></div>}>
+      <RegisterForm />
+    </Suspense>
   )
 }
