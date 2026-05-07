@@ -8,9 +8,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Data tidak lengkap' }, { status: 400 })
   }
 
-  const supabase = createServiceClient()
+  const supabase = await createServiceClient()
 
-  // Cek slug belum dipakai
   const { data: existing } = await supabase
     .from('schools')
     .select('id')
