@@ -9,11 +9,19 @@ export async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() { return request.cookies.getAll() },
-       setAll(cookiesToSet: any) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+        getAll() {
+          return request.cookies.getAll()
+        },
+
+        setAll(cookiesToSet: any) {
+
+          cookiesToSet.forEach(({ name, value }: any) =>
+            request.cookies.set(name, value)
+          )
+
           supabaseResponse = NextResponse.next({ request })
-          cookiesToSet.forEach(({ name, value, options }) =>
+
+          cookiesToSet.forEach(({ name, value, options }: any) =>
             supabaseResponse.cookies.set(name, value, options)
           )
         },
@@ -21,18 +29,23 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  // Redirect ke login jika belum login dan akses /dashboard
+  // Redirect ke login jika belum login dan akses dashboard
   if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Redirect ke dashboard jika sudah login tapi buka /login atau /register
-  if (user && (
-    request.nextUrl.pathname === '/login' ||
-    request.nextUrl.pathname === '/register'
-  )) {
+  // Redirect ke dashboard jika sudah login tapi buka login/register
+  if (
+    user &&
+    (
+      request.nextUrl.pathname === '/login' ||
+      request.nextUrl.pathname === '/register'
+    )
+  ) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
