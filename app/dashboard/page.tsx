@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 
 export default async function DashboardPage() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   const { data: school } = await supabase
@@ -10,8 +10,8 @@ export default async function DashboardPage() {
     .eq('id', user!.id)
     .single()
 
-  const { count: total }  = await supabase.from('students').select('id', { count: 'exact', head: true }).eq('school_id', user!.id)
-  const { count: lulus }  = await supabase.from('students').select('id', { count: 'exact', head: true }).eq('school_id', user!.id).eq('status', 'LULUS')
+  const { count: total }    = await supabase.from('students').select('id', { count: 'exact', head: true }).eq('school_id', user!.id)
+  const { count: lulus }    = await supabase.from('students').select('id', { count: 'exact', head: true }).eq('school_id', user!.id).eq('status', 'LULUS')
   const { count: tdkLulus } = await supabase.from('students').select('id', { count: 'exact', head: true }).eq('school_id', user!.id).eq('status', 'TIDAK LULUS')
 
   const countdownDate = school?.countdown_at ? new Date(school.countdown_at).toLocaleString('id-ID', {
