@@ -1,10 +1,12 @@
 'use client'
 import { useEffect } from 'react'
+import WaHelpFooter from '@/app/components/WaHelpFooter'
 
-export default function Modal({ title, onClose, children }: {
+export default function Modal({ title, onClose, children, showWaHelp = true }: {
   title: string
   onClose: () => void
   children: React.ReactNode
+  showWaHelp?: boolean
 }) {
   useEffect(() => {
     document.body.style.overflow = 'hidden'
@@ -25,6 +27,7 @@ export default function Modal({ title, onClose, children }: {
         </div>
         <div className="p-5">
           {children}
+          {showWaHelp && <WaHelpFooter />}
         </div>
       </div>
     </div>

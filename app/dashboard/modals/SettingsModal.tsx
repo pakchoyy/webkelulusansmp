@@ -10,15 +10,35 @@ export default function SettingsModal({ school, onClose }: { school: School; onC
   const [tahunAjaran, setTahunAjaran]   = useState(school.tahun_ajaran)
   const [heroTitle, setHeroTitle]       = useState(school.hero_title)
   const [batchLabel, setBatchLabel]     = useState(school.batch_label)
-  const [themePrimary, setThemePrimary] = useState(school.theme_primary)
-  const cdDate = school.countdown_at ? new Date(school.countdown_at).toISOString().slice(0, 10) : ''
-  const cdTime = school.countdown_at ? new Date(school.countdown_at).toTimeString().slice(0, 5) : '08:00'
+  const [themePrimary, setThemePrimary] = useState(school.theme_primary || '#2563eb')
+
+  // Default: 2 Juni 2026 jam 07:00
+  const DEFAULT_DATE = '2026-06-02'
+  const DEFAULT_TIME = '07:00'
+  const cdDate = school.countdown_at
+    ? new Date(school.countdown_at).toISOString().slice(0, 10)
+    : DEFAULT_DATE
+  const cdTime = school.countdown_at
+    ? new Date(school.countdown_at).toTimeString().slice(0, 5)
+    : DEFAULT_TIME
   const [countdownDate, setCountdownDate] = useState(cdDate)
   const [countdownTime, setCountdownTime] = useState(cdTime)
   const [logoFile, setLogoFile]   = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState<string | null>(school.logo_url)
   const [saving, setSaving] = useState(false)
   const [msg, setMsg]       = useState('')
+
+  // Warna preset — warna kotak cek hasil kelulusan (gradasi biru sesuai tema)
+  const PRESET_COLORS = [
+    { hex: '#2563eb', label: 'Biru' },
+    { hex: '#16a34a', label: 'Hijau' },
+    { hex: '#dc2626', label: 'Merah' },
+    { hex: '#9333ea', label: 'Ungu' },
+    { hex: '#ea580c', label: 'Oranye' },
+    { hex: '#0891b2', label: 'Cyan' },
+    { hex: '#be185d', label: 'Pink' },
+    { hex: '#854d0e', label: 'Coklat' },
+  ]
 
   function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0]
@@ -86,29 +106,37 @@ export default function SettingsModal({ school, onClose }: { school: School; onC
           </div>
         ))}
 
+        {/* Tanggal & Waktu Pengumuman — default 2 Juni 2026 07:00 */}
         <div>
-          <label className="text-xs font-bold text-gray-600 block mb-1">Tanggal & Waktu Pengumuman</label>
+          <label className="text-xs font-bold text-gray-600 block mb-1">📅 Tanggal & Waktu Pengumuman</label>
           <div className="grid grid-cols-2 gap-2">
             <input type="date" value={countdownDate} onChange={e => setCountdownDate(e.target.value)}
               className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 text-sm focus:outline-none focus:border-blue-400" />
             <input type="time" value={countdownTime} onChange={e => setCountdownTime(e.target.value)}
               className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 text-sm focus:outline-none focus:border-blue-400" />
           </div>
+          <p className="text-[10px] text-gray-400 mt-1">Default: 2 Juni 2026, 07:00</p>
         </div>
 
+        {/* Warna Tema */}
         <div>
-          <label className="text-xs font-bold text-gray-600 block mb-1">Warna Tema</label>
-          <div className="flex items-center gap-3">
+          <label className="text-xs font-bold text-gray-600 block mb-2">🎨 Warna Tema</label>
+          {/* Preview kotak cek hasil kelulusan dengan warna terpilih */}
+          <div className="rounded-xl p-3 mb-2 border-2 border-gray-100" style={{ background: `linear-gradient(135deg, ${themePrimary}, ${themePrimary}dd)` }}>
+            <p className="text-white text-xs font-bold text-center opacity-80">Preview kotak "Cek Hasil Kelulusan"</p>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
             <input type="color" value={themePrimary} onChange={e => setThemePrimary(e.target.value)}
-              className="w-10 h-10 rounded-lg border-2 border-gray-200 cursor-pointer p-0.5" />
-            <span className="font-mono text-sm">{themePrimary}</span>
-            <div className="flex gap-1.5">
-              {['#2563eb','#16a34a','#dc2626','#9333ea','#ea580c'].map(c => (
-                <button key={c} type="button" onClick={() => setThemePrimary(c)}
-                  className="w-6 h-6 rounded-full border-2 border-gray-300 hover:scale-110 transition-transform"
-                  style={{ background: c }} />
-              ))}
-            </div>
+              className="w-10 h-10 rounded-lg border-2 border-gray-200 cursor-pointer p-0.5 flex-shrink-0" />
+            <span className="font-mono text-xs text-gray-500">{themePrimary}</span>
+          </div>
+          <div className="flex gap-2 mt-2 flex-wrap">
+            {PRESET_COLORS.map(c => (
+              <button key={c.hex} type="button" onClick={() => setThemePrimary(c.hex)}
+                title={c.label}
+                className={`w-7 h-7 rounded-full border-2 hover:scale-110 transition-transform ${themePrimary === c.hex ? 'border-gray-900 scale-110' : 'border-gray-300'}`}
+                style={{ background: c.hex }} />
+            ))}
           </div>
         </div>
 
