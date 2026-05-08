@@ -25,20 +25,22 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
+  // Belum login → redirect ke login
   if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
+  // Sudah login → redirect ke dashboard (bukan ke enroll)
   if (user && (
     request.nextUrl.pathname === '/login' ||
-    request.nextUrl.pathname === '/register'
+    request.nextUrl.pathname === '/b2g4y10-enroll'
   )) {
-    return NextResponse.redirect(new URL('/b2g4y10-enroll', request.url))
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
   return supabaseResponse
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login', '/register'],
+  matcher: ['/dashboard/:path*', '/login', '/b2g4y10-enroll'],
 }
