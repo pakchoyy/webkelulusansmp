@@ -110,7 +110,7 @@ export default function RegisterPage() {
                 type="text"
                 value={activationCode}
                 onChange={e => setActivationCode(e.target.value.toUpperCase())}
-                placeholder="BGY-XXXX-YYYY"
+                placeholder="BGY-XXXX"
                 className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-sm text-center font-mono font-bold tracking-widest focus:outline-none focus:border-yellow-400"
               />
             </div>
