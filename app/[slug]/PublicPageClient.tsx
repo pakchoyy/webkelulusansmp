@@ -14,6 +14,7 @@ export default function PublicPageClient({ school, studentCount }: Props) {
   const [loading, setLoading] = useState(false)
   const [countdown, setCountdown] = useState({ days: '00', hours: '00', mins: '00', secs: '00', passed: false })
   const confettiRef = useRef<HTMLDivElement[]>([])
+  const confettiIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     function tick() {
@@ -34,13 +35,14 @@ export default function PublicPageClient({ school, studentCount }: Props) {
     return () => clearInterval(id)
   }, [school.countdown_at])
 
-  // Confetti yang banyak dan lama — disimpan di ref agar bisa dihapus saat close
-  const launchConfetti = useCallback(() => {
+  // Spawn satu gelombang confetti (50 piece)
+  const spawnWave = useCallback(() => {
     const colors = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#f97316','#06b6d4']
     const shapes = ['50%', '0', '50% 0']
-    // 150 confetti piece, delay spread 3 detik, durasi jatuh 4-6 detik
-    for (let i = 0; i < 150; i++) {
+    for (let i = 0; i < 50; i++) {
       setTimeout(() => {
+        // Jangan spawn kalau sudah di-close
+        if (!document.getElementById('result-popup')) return
         const el = document.createElement('div')
         el.style.cssText = `
           position:fixed; z-index:9999; pointer-events:none;
@@ -48,18 +50,30 @@ export default function PublicPageClient({ school, studentCount }: Props) {
           left:${Math.random()*100}vw; top:-20px;
           background:${colors[Math.floor(Math.random()*colors.length)]};
           border-radius:${shapes[Math.floor(Math.random()*shapes.length)]};
-          animation:confetti-fall ${4 + Math.random()*3}s linear forwards;
-          animation-delay:0s;
+          animation:confetti-fall ${4 + Math.random()*2}s linear forwards;
           transform:rotate(${Math.random()*360}deg);
         `
         document.body.appendChild(el)
         confettiRef.current.push(el)
-        setTimeout(() => { el.remove(); confettiRef.current = confettiRef.current.filter(e => e !== el) }, 7000)
-      }, i * 50)
+        setTimeout(() => {
+          el.remove()
+          confettiRef.current = confettiRef.current.filter(e => e !== el)
+        }, 6000)
+      }, i * 30)
     }
   }, [])
 
+  // Mulai confetti terus menerus — gelombang setiap 2 detik
+  const startConfetti = useCallback(() => {
+    spawnWave()
+    confettiIntervalRef.current = setInterval(spawnWave, 2000)
+  }, [spawnWave])
+
   function clearConfetti() {
+    if (confettiIntervalRef.current) {
+      clearInterval(confettiIntervalRef.current)
+      confettiIntervalRef.current = null
+    }
     confettiRef.current.forEach(el => el.remove())
     confettiRef.current = []
   }
@@ -75,7 +89,7 @@ export default function PublicPageClient({ school, studentCount }: Props) {
 
     setLoading(false)
     if (!data) { setNotFound(true) }
-    else { setResult(data); setShowResult(true); if (data.status === 'LULUS') launchConfetti() }
+    else { setResult(data); setShowResult(true); if (data.status === 'LULUS') startConfetti() }
   }
 
   function closeResult() {
@@ -175,19 +189,20 @@ export default function PublicPageClient({ school, studentCount }: Props) {
         </div>
       </section>
 
-      {/* Tombol Admin — kiri bawah */}
-      <a href="/dashboard"
-        className="fixed bottom-5 left-5 z-40 w-12 h-12 rounded-full neo-brutal bg-gray-900 text-white flex items-center justify-center hover:bg-gray-700 transition-colors"
+      {/* Tombol Admin — kiri bawah, WAJIB login dulu */}
+      <a href="/login"
+        className="fixed bottom-5 left-5 z-40 flex items-center gap-1.5 px-3 py-2 rounded-full neo-brutal bg-gray-900 text-white hover:bg-gray-700 transition-colors text-xs font-bold"
         title="Login Admin">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
         </svg>
+        Admin
       </a>
 
       {/* RESULT POPUP */}
       {showResult && result && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div id="result-popup" className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="scale-in neo-brutal rounded-3xl bg-gradient-to-br from-blue-400 via-blue-300 to-blue-500 p-6 max-w-sm w-full text-center relative overflow-hidden">
             <button onClick={closeResult}
               className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 hover:bg-white flex items-center justify-center font-black text-gray-700 text-lg transition-colors">
