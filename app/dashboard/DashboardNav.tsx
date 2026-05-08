@@ -37,7 +37,7 @@ export default function DashboardNav({ namaSekolah, slug }: { namaSekolah: strin
           {slug && (
             <a href={`/${slug}`} target="_blank"
               className="flex items-center gap-1 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-bold text-green-700 bg-green-50 hover:bg-green-100 transition-colors border border-green-200">
-              Pengumuman
+              Web Pengumuman
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>

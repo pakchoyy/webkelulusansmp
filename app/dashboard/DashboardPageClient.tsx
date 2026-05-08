@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import type { School } from '@/types'
 
 type Props = {
@@ -17,7 +18,13 @@ const SettingsModal = dynamic(() => import('./modals/SettingsModal'))
 const UploadModal   = dynamic(() => import('./modals/UploadModal'))
 
 export default function DashboardPageClient({ school, total, lulus, tdkLulus, countdownDate }: Props) {
+  const router = useRouter()
   const [openModal, setOpenModal] = useState<'students' | 'settings' | 'upload' | null>(null)
+
+  function handleSettingsClose() {
+    setOpenModal(null)
+    router.refresh()
+  }
 
   return (
     <div className="space-y-4">
@@ -30,7 +37,7 @@ export default function DashboardPageClient({ school, total, lulus, tdkLulus, co
           </div>
           <a href={`/${school?.slug}`} target="_blank"
             className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 transition-colors px-3 py-2 rounded-xl text-xs font-bold text-white border border-white/30">
-            Lihat Pengumuman
+            Web Pengumuman
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
@@ -58,7 +65,7 @@ export default function DashboardPageClient({ school, total, lulus, tdkLulus, co
         <p className="font-black text-gray-900">{countdownDate}</p>
       </div>
 
-      {/* Aksi Cepat — buka modal */}
+      {/* Aksi Cepat */}
       <div className="neo-brutal rounded-2xl bg-white p-4">
         <p className="font-bold text-gray-700 mb-3">⚡ Aksi Cepat</p>
         <div className="grid grid-cols-2 gap-2">
@@ -76,20 +83,20 @@ export default function DashboardPageClient({ school, total, lulus, tdkLulus, co
           </button>
           <a href={`/${school?.slug}`} target="_blank"
             className="neo-brutal-sm rounded-xl px-4 py-3 font-bold text-sm text-center bg-yellow-300 text-gray-900 hover:bg-yellow-400 transition-colors">
-            🔗 Halaman Pengumuman
+            🌐 Web Pengumuman
           </a>
         </div>
       </div>
 
       {/* Modals */}
       {openModal === 'students' && (
-        <StudentsModal schoolId={school.id} onClose={() => setOpenModal(null)} />
+        <StudentsModal schoolId={school.id} onClose={() => { setOpenModal(null); router.refresh() }} />
       )}
       {openModal === 'settings' && (
-        <SettingsModal school={school} onClose={() => setOpenModal(null)} />
+        <SettingsModal school={school} onClose={handleSettingsClose} />
       )}
       {openModal === 'upload' && (
-        <UploadModal schoolId={school.id} onClose={() => setOpenModal(null)} />
+        <UploadModal schoolId={school.id} onClose={() => { setOpenModal(null); router.refresh() }} />
       )}
     </div>
   )
