@@ -70,7 +70,7 @@ export default function UploadPage() {
                 <tr>
                   <td className="border border-yellow-200 px-2 py-1">1234567890</td>
                   <td className="border border-yellow-200 px-2 py-1">Budi Santoso</td>
-                  <td className="border border-yellow-200 px-2 py-1">VI-A</td>
+                  <td className="border border-yellow-200 px-2 py-1">IX-A</td>
                   <td className="border border-yellow-200 px-2 py-1">LULUS</td>
                   <td className="border border-yellow-200 px-2 py-1">Tetap semangat!</td>
                 </tr>

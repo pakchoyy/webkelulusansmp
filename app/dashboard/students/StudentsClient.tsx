@@ -25,7 +25,7 @@ export default function StudentsClient({ initialStudents, schoolId }: {
   // Form state
   const [nisn, setNisn] = useState('')
   const [nama, setNama] = useState('')
-  const [kelas, setKelas] = useState('VI')
+  const [kelas, setKelas] = useState('IX')
   const [status, setStatus] = useState<'LULUS' | 'TIDAK LULUS'>('LULUS')
   const [pesan, setPesan] = useState('')
 
@@ -79,7 +79,7 @@ export default function StudentsClient({ initialStudents, schoolId }: {
             <div>
               <label className="text-xs font-bold text-gray-500 block mb-1">Kelas</label>
               <input value={kelas} onChange={e => setKelas(e.target.value)}
-                placeholder="VI-A"
+                placeholder="IX-A"
                 className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 text-sm focus:outline-none focus:border-blue-400" />
             </div>
           </div>

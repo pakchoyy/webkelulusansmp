@@ -23,7 +23,7 @@ export default function StudentsModal({ schoolId, onClose }: { schoolId: string;
   // Form
   const [nisn, setNisn]     = useState('')
   const [nama, setNama]     = useState('')
-  const [kelas, setKelas]   = useState('VI')
+  const [kelas, setKelas]   = useState('IX')
   const [status, setStatus] = useState<'LULUS' | 'TIDAK LULUS'>('LULUS')
   const [pesan, setPesan]   = useState('')
   const [tab, setTab]       = useState<'tambah' | 'daftar'>('tambah')
@@ -43,7 +43,7 @@ export default function StudentsModal({ schoolId, onClose }: { schoolId: string;
 
   function resetForm() {
     setEditStudent(null)
-    setNisn(''); setNama(''); setKelas('VI'); setStatus('LULUS'); setPesan('')
+    setNisn(''); setNama(''); setKelas('IX'); setStatus('LULUS'); setPesan('')
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -107,7 +107,7 @@ export default function StudentsModal({ schoolId, onClose }: { schoolId: string;
             </div>
             <div>
               <label className="text-xs font-bold text-gray-500 block mb-1">Kelas</label>
-              <input value={kelas} onChange={e => setKelas(e.target.value)} placeholder="VI-A"
+              <input value={kelas} onChange={e => setKelas(e.target.value)} placeholder="IX-A"
                 className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 text-sm focus:outline-none focus:border-blue-400" />
             </div>
           </div>

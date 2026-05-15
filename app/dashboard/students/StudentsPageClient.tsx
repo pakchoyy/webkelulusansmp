@@ -23,7 +23,7 @@ export default function StudentsPageClient({ initialStudents, schoolId }: {
 
   const [nisn, setNisn]     = useState('')
   const [nama, setNama]     = useState('')
-  const [kelas, setKelas]   = useState('VI')
+  const [kelas, setKelas]   = useState('IX')
   const [status, setStatus] = useState<'LULUS' | 'TIDAK LULUS'>('LULUS')
   const [pesan, setPesan]   = useState('')
 
@@ -32,7 +32,7 @@ export default function StudentsPageClient({ initialStudents, schoolId }: {
     setKelas(s.kelas); setStatus(s.status); setPesan(s.pesan)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
-  function resetForm() { setEditStudent(null); setNisn(''); setNama(''); setKelas('VI'); setStatus('LULUS'); setPesan('') }
+  function resetForm() { setEditStudent(null); setNisn(''); setNama(''); setKelas('IX'); setStatus('LULUS'); setPesan('') }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault(); setLoading(true)
@@ -84,7 +84,7 @@ export default function StudentsPageClient({ initialStudents, schoolId }: {
             </div>
             <div>
               <label className="text-xs font-bold text-gray-500 block mb-1">Kelas</label>
-              <input value={kelas} onChange={e => setKelas(e.target.value)} placeholder="VI-A"
+              <input value={kelas} onChange={e => setKelas(e.target.value)} placeholder="IX-A"
                 className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 text-sm focus:outline-none focus:border-blue-400" />
             </div>
           </div>
