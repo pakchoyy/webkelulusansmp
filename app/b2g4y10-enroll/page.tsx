@@ -136,7 +136,7 @@ function RegisterForm() {
                   setNamaSekolah(e.target.value)
                   setSlug(generateSlug(e.target.value))
                 }}
-                placeholder="SD Negeri 1 Nusantara"
+                placeholder="SMP Negeri 1 Nusantara"
                 required
                 className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-sm focus:outline-none focus:border-blue-400"
               />
@@ -147,12 +147,12 @@ function RegisterForm() {
                 type="text"
                 value={slug}
                 onChange={e => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                placeholder="sdn1-nusantara"
+                placeholder="smpn1-nusantara"
                 required
                 className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-sm font-mono focus:outline-none focus:border-blue-400"
               />
               <p className="text-xs text-gray-400 mt-1">
-                umuminsd.vercel.app/<strong className="text-blue-600">{slug || 'slug-sekolah'}</strong>
+                umuminsmp.vercel.app/<strong className="text-blue-600">{slug || 'slug-sekolah'}</strong>
               </p>
             </div>
             <div>

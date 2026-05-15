@@ -48,10 +48,7 @@ export default function DashboardNav({ namaSekolah, slug }: { namaSekolah: strin
               </svg>
             </a>
           )}
-          <a href="https://lynk.id/kreacy/66rmgwxx94r0" target="_blank"
-            className="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-orange-500 hover:bg-orange-600 transition-colors">
-            🔓 Beli Pro
-          </a>
+
           <button onClick={logout}
             className="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-bold text-red-600 hover:bg-red-50 transition-colors">
             Keluar
@@ -92,11 +89,7 @@ export default function DashboardNav({ namaSekolah, slug }: { namaSekolah: strin
               🌐 Web Pengumuman
             </a>
           )}
-          <a href="https://lynk.id/kreacy/66rmgwxx94r0" target="_blank"
-            onClick={() => setMenuOpen(false)}
-            className="px-3 py-2 rounded-lg text-sm font-bold text-white bg-orange-500 hover:bg-orange-600 transition-colors text-center">
-            🔓 Beli Pro
-          </a>
+
           <button onClick={logout}
             className="px-3 py-2 rounded-lg text-sm font-bold text-red-600 hover:bg-red-50 transition-colors text-left">
             Keluar

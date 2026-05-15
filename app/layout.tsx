@@ -3,7 +3,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Pengumuman Kelulusan',
-  description: 'Cek hasil kelulusan siswa SD',
+  description: 'Cek hasil kelulusan siswa SMP',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
