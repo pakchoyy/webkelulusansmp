@@ -128,7 +128,7 @@ export default function UploadModal({ schoolId, onClose }: { schoolId: string; o
             </div>
             {result && <p className="font-black text-sm text-center mb-3 p-3 bg-green-50 text-green-700 rounded-xl border border-green-200">{result}</p>}
             <button onClick={handleUpload} disabled={loading}
-              className="neo-brutal-sm w-full bg-blue-800 text-white font-bold py-3.5 rounded-2xl hover:bg-blue-900 transition-colors disabled:opacity-60 text-sm">
+              className="neo-brutal-sm w-full bg-blue-600 text-white font-bold py-3.5 rounded-2xl hover:bg-blue-700 transition-colors disabled:opacity-60 text-sm">
               {loading ? 'Sedang Mengimpor...' : `🚀 Proses Impor ${preview.length} Siswa Sekarang`}
             </button>
           </div>

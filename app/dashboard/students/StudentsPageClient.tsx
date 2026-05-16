@@ -131,7 +131,7 @@ export default function StudentsPageClient({ initialStudents, schoolId }: {
               </button>
             )}
             <button type="submit" disabled={loading}
-              className="flex-1 bg-blue-800 text-white font-bold py-2.5 rounded-xl neo-brutal-sm hover:bg-blue-900 transition-colors disabled:opacity-60">
+              className="flex-1 bg-blue-600 text-white font-bold py-2.5 rounded-xl neo-brutal-sm hover:bg-blue-700 transition-colors disabled:opacity-60">
               {loading ? 'Menyimpan...' : editStudent ? 'Simpan Perubahan' : 'Tambah Siswa'}
             </button>
           </div>
