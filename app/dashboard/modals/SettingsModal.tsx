@@ -14,10 +14,9 @@ export default function SettingsModal({ school, onClose }: { school: School; onC
   const [batchLabel, setBatchLabel]     = useState(school.batch_label)
   const [themePrimary, setThemePrimary] = useState(school.theme_primary || '#2563eb')
 
-  const DEFAULT_DATE = '2026-06-02'
-  const DEFAULT_TIME = '07:00'
-  const cdDate = school.countdown_at ? new Date(school.countdown_at).toISOString().slice(0, 10) : DEFAULT_DATE
-  const cdTime = school.countdown_at ? new Date(school.countdown_at).toTimeString().slice(0, 5) : DEFAULT_TIME
+  const d = school.countdown_at ? new Date(school.countdown_at) : new Date('2026-06-02T07:00:00')
+  const cdDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  const cdTime = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
   const [countdownDate, setCountdownDate] = useState(cdDate)
   const [countdownTime, setCountdownTime] = useState(cdTime)
   const [logoFile, setLogoFile]     = useState<File | null>(null)
@@ -60,7 +59,7 @@ export default function SettingsModal({ school, onClose }: { school: School; onC
     }
 
     const countdownAt = countdownDate && countdownTime
-      ? new Date(`${countdownDate}T${countdownTime}:00`).toISOString()
+      ? new Date(`${countdownDate}T${countdownTime}:00+07:00`).toISOString()
       : school.countdown_at
 
     // Demo: nama_sekolah dan slug TIDAK diupdate

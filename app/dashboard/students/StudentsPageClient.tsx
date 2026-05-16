@@ -2,6 +2,9 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { Student } from '@/types'
+import dynamic from 'next/dynamic'
+
+const UploadModal = dynamic(() => import('../modals/UploadModal'))
 
 const DEFAULT_MESSAGES = [
   'Masa depanmu penuh dengan kemungkinan tak terbatas, percayalah pada dirimu.',
@@ -20,6 +23,7 @@ export default function StudentsPageClient({ initialStudents, schoolId }: {
   const [loading, setLoading] = useState(false)
   const [msg, setMsg]         = useState('')
   const [editStudent, setEditStudent] = useState<Student | null>(null)
+  const [showUpload, setShowUpload]   = useState(false)
 
   const [nisn, setNisn]     = useState('')
   const [nama, setNama]     = useState('')
@@ -127,7 +131,7 @@ export default function StudentsPageClient({ initialStudents, schoolId }: {
               </button>
             )}
             <button type="submit" disabled={loading}
-              className="flex-1 bg-blue-600 text-white font-bold py-2.5 rounded-xl neo-brutal-sm hover:bg-blue-700 transition-colors disabled:opacity-60">
+              className="flex-1 bg-blue-800 text-white font-bold py-2.5 rounded-xl neo-brutal-sm hover:bg-blue-900 transition-colors disabled:opacity-60">
               {loading ? 'Menyimpan...' : editStudent ? 'Simpan Perubahan' : 'Tambah Siswa'}
             </button>
           </div>
@@ -135,7 +139,15 @@ export default function StudentsPageClient({ initialStudents, schoolId }: {
       </div>
 
       <div className="neo-brutal rounded-2xl bg-white p-5">
-        <h2 className="font-black text-gray-900 mb-3">📋 Daftar Siswa ({students.length})</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-black text-gray-900">📋 Daftar Siswa ({students.length})</h2>
+          <button 
+            onClick={() => setShowUpload(true)}
+            className="bg-green-600 text-white text-[10px] font-black px-3 py-1.5 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-1.5"
+          >
+            📥 Upload Excel Data Siswa
+          </button>
+        </div>
         <input type="text" value={search} onChange={e => setSearch(e.target.value)}
           placeholder="Cari nama atau NISN..."
           className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 text-sm mb-3 focus:outline-none focus:border-blue-400" />
@@ -162,6 +174,8 @@ export default function StudentsPageClient({ initialStudents, schoolId }: {
           </div>
         )}
       </div>
+
+      {showUpload && <UploadModal schoolId={schoolId} onClose={() => { setShowUpload(false); window.location.reload() }} />}
     </div>
   )
 }

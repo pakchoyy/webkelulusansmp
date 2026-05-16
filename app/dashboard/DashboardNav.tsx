@@ -34,7 +34,7 @@ export default function DashboardNav({ namaSekolah, slug }: { namaSekolah: strin
           {links.map(l => (
             <Link key={l.href} href={l.href}
               className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-                pathname === l.href ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
+                pathname === l.href ? 'bg-blue-800 text-white' : 'text-gray-600 hover:bg-gray-100'
               }`}>
               {l.label}
             </Link>
@@ -77,7 +77,7 @@ export default function DashboardNav({ namaSekolah, slug }: { namaSekolah: strin
             <Link key={l.href} href={l.href}
               onClick={() => setMenuOpen(false)}
               className={`px-3 py-2 rounded-lg text-sm font-bold transition-colors ${
-                pathname === l.href ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
+                pathname === l.href ? 'bg-blue-800 text-white' : 'text-gray-600 hover:bg-gray-100'
               }`}>
               {l.label}
             </Link>
