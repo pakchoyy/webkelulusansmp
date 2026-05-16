@@ -9,13 +9,17 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const { data: school } = await supabase
     .from('schools')
-    .select('nama_sekolah, slug')
+    .select('nama_sekolah, slug, logo_url')
     .eq('id', user.id)
     .single()
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <DashboardNav namaSekolah={school?.nama_sekolah || ''} slug={school?.slug || ''} />
+      <DashboardNav 
+        namaSekolah={school?.nama_sekolah || ''} 
+        slug={school?.slug || ''} 
+        logoUrl={school?.logo_url} 
+      />
       <main className="flex-1 max-w-2xl mx-auto w-full p-4 pt-6">
         {children}
       </main>
